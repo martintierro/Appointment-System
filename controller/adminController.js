@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
     let admin = await Account.getAccountByUsername("admin");
     if (req.session.username == "admin") {
         res.render("page_templates/admin_view.hbs", {
-            password: admin.password
+            password: admin.password,
         });
     } else {
         res.redirect("/login");
@@ -39,30 +39,40 @@ router.get("/", async (req, res) => {
 
 //VALIDATION
 router.post("/checkCurrentAdminPassword", async (req, res) => {
+
     let admin = await Account.getAccountByUsername("admin");
-    var temp = await Account.authenticate(admin.username, req.body.newPassword, admin.salt);
-    if(temp != null) {
+    var temp = await Account.authenticate(
+        admin.username,
+        req.body.newPassword,
+        admin.salt
+    );
+    if (temp != null) {
         res.send(true);
     } else {
         res.send(false);
     }
-})
+});
 
 // CHECKS IF THE CURRENT PASSWORD IS CORRECT
 // TAKEN FROM THE MODEL ACCOUNT
 router.post("/checkCurrentSecretaryPassword", async (req, res) => {
     let user = await Account.getAccountByUsername("secretary");
-    var temp = await Account.authenticate(user.username, req.body.newPassword, user.salt);
-    if(temp != null) {
+    var temp = await Account.authenticate(
+        user.username,
+        req.body.newPassword,
+        user.salt
+    );
+    if (temp != null) {
         res.send(true);
     } else {
         res.send(false);
     }
-})
+});
 
 // CHECKS IF THE USERNAME INPUT IS IN THE DATABASE
 router.post("/validateUsername", async (req, res) => {
     let account = await Account.getAccountByUsername(req.body.username);
+    console.log(req.body.username);
     if (account == undefined) {
         res.send({message: false})
     } else {
@@ -77,25 +87,23 @@ var check_username = async function (username) {
     } else {
         return true;
     }
-}
+};
 
 // ALL ACCOUNT SETTING
 
 // ALLOWS CHANGING OF THE CURRENTLY LOGGED USER'S PASSWORD
 router.post("/updateAccountPassword", async (req, res) => {
     res.send({
-        message: update_password(
-            req.body.username,
-            req.body.newPassword
-        ),
+        
+        message: update_password(req.body.username, req.body.newPassword),
     });
 });
 
 var update_password = async function (username, newPassword) {
     let account = await Account.getAccountByUsername(username);
-    if(account==undefined){
+    if (account == undefined) {
         return false;
-    } else{
+    } else {
         Account.updateAccount(account.id, newPassword);
         return true;
     }
@@ -164,7 +172,7 @@ router.post("/deleteAccount", async (req, res) => {
                     date: appointments[i].date,
                     doctor: ary,
                 });
-                await Appointment.updateAppointment(appointments, temp);
+                await Appointment.updateAppointment(appID, temp);
             }
         }
     }
@@ -274,6 +282,7 @@ router.post("/editDentist", async (req, res) => {
 // ALLOWS UPDATING IF THE DOCTOR IS CURRENTLY AVAILABLE OR NOT
 router.post("/updateDentistStatus", async (req, res) => {
     Doctor.updateDoctorStatus(req.body.doctorID, req.body.status);
+    res.send(true);
 });
 
 // ADD PROCESS; This probably refers to an appointment
@@ -307,7 +316,7 @@ router.post("/editProcess", async (req, res) => {
 });
 //Deletes an existing appointment
 router.post("/deleteProcess", async (req, res) => {
-    let processID = req.body.processID;
+    let processID = req.body.procedureID;
     let apps = await Appointment.getAll();
     for (var i = 0; i < apps.length; i++) {
         let appID = apps[i]._id;
@@ -326,7 +335,7 @@ router.post("/deleteProcess", async (req, res) => {
                 date: apps[i].date,
                 doctor: apps[i].doctor,
             });
-            await Appointment.updateAppointment(apps, temp);
+            await Appointment.updateAppointment(appID, temp);
         }
     }
     Process.delete(processID);
@@ -384,6 +393,13 @@ router.get("/adminDentist", urlencoder, async (req, res) => {
     });
 });
 
+router.get("/getAllDentists", urlencoder, async (req, res) => {
+    let doctors = await Doctor.getAllDoctors();
+    res.send({
+        dentists: doctors,
+    });
+});
+
 // LOAD TABLES FOR ALL PROCEDURES
 router.get("/adminProcedure", urlencoder, async (req, res) => {
     let processes = await Process.getAllProcesses();
@@ -399,6 +415,13 @@ router.get("/adminProcedure", urlencoder, async (req, res) => {
             table,
         },
         data: sendData,
+    });
+});
+
+router.get("/getAllProcedures", urlencoder, async (req, res) => {
+    let processes = await Process.getAllProcesses();
+    res.send({
+        procedures: processes,
     });
 });
 
@@ -551,6 +574,25 @@ router.post("/getSchedule", urlencoder, async (req, res) => {
         data: sendData,
     });
 });
+router.post("/getDentistSchedule", urlencoder, async (req, res) => {
+    let doctorID = req.body.doctorID;
+    let doctor = await Doctor.getDoctorByID(doctorID);
+    let docSched = await Schedule.getScheduleByID(doctor.schedule);
+    let breaktime = await BreakTime.getBreakTimeByID(doctor.breakTime);
+
+    let array = [],
+        docID;
+    if (docSched != undefined) {
+        array = getObject(docSched, breaktime);
+        docID = docSched._id;
+    } else {
+        docID = "";
+    }
+    res.send({
+        sched: array,
+        schedID: docID,
+    });
+});
 
 //pushes an empty sched? *** to be checked ***
 function getObject(object, breakTime) {
@@ -640,8 +682,8 @@ function getObject(object, breakTime) {
 //Adds the dates that a doctor is unavailable
 router.post("/addUnavailableDates", urlencoder, async (req, res) => {
     let doctorID = req.body.doctorID;
-    let startDate = req.body.startdate;
-    let endDate = req.body.enddate;
+    let startDate = req.body.startDate;
+    let endDate = req.body.endDate;
 
     let startnewDate = Date.parse(startDate);
     let startformattedDate = moment(startnewDate).format("YYYY-MM-DD");
@@ -653,9 +695,9 @@ router.post("/addUnavailableDates", urlencoder, async (req, res) => {
     );
 
     let unavailableDate = new UnavailableDate({
-        momentDate1: req.body.startdate,
+        momentDate1: req.body.startDate,
         stringDate1: startformattedDate,
-        momentDate2: req.body.enddate,
+        momentDate2: req.body.endDate,
         stringDate2: endformattedDate,
         doctor: doctorID,
     });
@@ -727,6 +769,16 @@ router.post("/getUnavailableDates", urlencoder, async (req, res) => {
     });
 });
 
+//gets the unavailable dates of a doctor to show in the website
+router.post("/getAllUnavailableDates", urlencoder, async (req, res) => {
+    let doctorID = req.body.doctorID;
+    let data = await UnavailableDate.getDoctorUnavailableDates(doctorID);
+
+    res.send({
+        sched: modifyArray(data),
+    });
+});
+
 //removes uneeded data (data to not be shown) and passes data to be shown in the website
 function modifyArray(object) {
     var objectUnavailable = [];
@@ -783,6 +835,16 @@ router.post("/doctorHasAppointment", urlencoder, async (req, res) => {
     let startformattedDate = moment(startnewDate).format("MMM D YYYY");
     let endnewDate = Date.parse(enddate);
     let endformattedDate = moment(endnewDate).format("MMM D YYYY");
+
+    let today = new Date();
+    let todayFormatted = moment(today).format("MMM D YYYY");
+
+    if (
+        todayFormatted == startformattedDate ||
+        todayFormatted == endformattedDate
+    ) {
+        res.send(true);
+    }
 
     let startappointments = await Appointment.getAppByDoctorandDate(
         doctorID,

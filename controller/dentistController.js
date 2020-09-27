@@ -25,8 +25,16 @@ router.get("/", async function (req, res) {
 
 // Gets all the appointments of the current user/doctor
 router.post("/getAppointment", async function (req, res) {
+   
     let appointment = await Appointment.getAppointmentsByID(req.body.appID);
     res.send(await appointment.populateDoctorAndProcess());
+})
+
+router.post("/getAppointmentByDoctor",async function(req, res){
+    console.log("AT GET APPOINTMENT: "+ req.body.appID);
+    let appointment = await Appointment.getDoctorAppointment(req.body.appID);
+    console.log(appointment);
+    res.send(appointment);
 })
 
 //calls the hbs dable header
@@ -39,7 +47,7 @@ router.get("/table_header", function (request, result) {
 //shows a weekly view of the appointments (also empty dates)
 router.post("/weekly_view", urlencoder, async function (request, result) {
     let dentist = await Account.getAccountByUsername(request.session.doctorUsername);
-
+    console.log('DENTIST: '+ dentist)
     // Get the date from sent data
     let date = Date.parse(request.body.date);
 
@@ -85,6 +93,8 @@ router.post("/weekly_view", urlencoder, async function (request, result) {
         }));
         day = day.clone().add(1, 'd');
     }
+
+    console.log("DATES: "+dates)
 
     let final = {
         data: dates

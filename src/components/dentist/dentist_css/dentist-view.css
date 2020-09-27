@@ -1,0 +1,138 @@
+#secretary_dateHeader{
+    margin:0px;
+}
+
+#secretary-add-appointment{
+    width: 100px;
+    padding:0px;
+}
+
+#SECHEADER{
+    border-color: black;
+    margin: 0px;
+    border-radius: 0px;
+    
+}
+
+#sec-header-child{
+    border-color: black
+}
+#sec-header-child:hover{
+    border-color: black;
+    cursor: pointer;
+    background-color: red;
+}
+
+#week_all{
+    margin:0px;
+    border-color:black;
+    border-radius: 0px;
+}
+
+#week-all-table-cell{
+    border-color:black;
+    
+}
+
+#table-header-title{
+    margin:0px;
+    border-radius: 0%;
+    font-weight: bolder;
+    border-right-color: black;
+    border-left-color: black;
+    font-size: large;
+}
+
+#week-all-time-cell{
+    width: 100px;
+    border-color:black;
+}
+
+.ui.fluid.card{
+    background-color: pink;
+    color: black;
+    font-weight: bold;
+    text-align: left;
+    border-left: 5px solid red;
+    
+}
+
+.ui.fluid.card:hover{
+    background-color: pink;
+    font-weight: bold;
+    text-align: left;
+    border-left: 5px solid red;
+    color:white
+
+    
+    
+}
+
+.ui.card > div.header{
+    background-color: pink;
+    font-size: large;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border: none;
+    color: black
+}
+
+.ui.fluid.card > div.header:hover{
+
+    background-color: pink;
+    font-size: large;
+    padding-top: 2px;
+    padding-bottom: 2x;
+    border: none;
+    color: white
+}
+
+.ui.card > div.content{
+    background-color: pink;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    
+}
+
+#today{
+    font-weight: bold;
+    color: black;
+}
+
+#day-all-table-cell{
+    border-color:black;  
+}
+
+#day-all-time-cell{
+    width: 100px;
+    border-color:black;
+}
+
+span.secretary-card-day-content{
+    color: black;
+    
+    
+}
+
+div#day-all-div{
+    display: flex;
+    align-items: baseline;
+}
+
+#week-availability-time-cell{
+    width: 100px;
+    border-color:black;
+}
+
+#week-available{
+    margin:0px;
+    border-color:black;
+    border-radius: 0px;
+}
+
+#secretary-available-table-cell{
+    border-color: black;
+}

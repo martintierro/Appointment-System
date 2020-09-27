@@ -130,7 +130,8 @@ $("#reset-button").click(() => {
                 position: "top center",
                 message: "Invalid access"
             });
-        } else {
+        }
+         else {
             $('body').toast({
                 class: "error",
                 position: "top center",
@@ -186,7 +187,7 @@ $("#reset-button").click(() => {
             $('body').toast({
                 class: "error",
                 position: "top center",
-                message: "Password do not match"
+                message: "Passwords do not match"
             }); 
             $("#reset-password-field").addClass("error");
             $("#reset-confirm-password-field").addClass("error");
@@ -196,12 +197,30 @@ $("#reset-button").click(() => {
         }
     }
 
-    if(done && passwordChecker) {
-        $("#forgot-modal").modal("deny");
-        username = $("#reset-username").val().trim();
-        newPassword = $("#reset-password").val();
-        $("#confirm-admin-modal").modal("show");
-    } 
+    $.ajax({
+        type: "post",
+        url: "/admin/validateUsername",
+        data:  {
+            username: $("#reset-username").val().trim()
+        },
+        success: (value) => {
+            if(!value.message) {
+                $("#reset-username-field").addClass("error");
+                $('body').toast({
+                    class: "error",
+                    position: "top center",
+                    message: "Username does not exist"
+                });
+            } else{
+                if(done && passwordChecker) {
+                    $("#forgot-modal").modal("deny");
+                    username = $("#reset-username").val().trim();
+                    newPassword = $("#reset-password").val();
+                    $("#confirm-admin-modal").modal("show");
+                } 
+            }
+        }
+    })
 })
 
 //error checking and submit for resetting admin 

@@ -1,0 +1,27 @@
+
+html, body, #root, .App, .App>div {
+  height: 100%;
+  overflow: hidden;
+}
+body{
+  display: block;
+  margin-right:0;
+}
+
+.ui.modal > .header {
+  background-color: #e03997 !important;
+  color: white !important;
+}
+.ui.modal > .header > .icon{
+  margin-right: 13px;
+}
+.center-header{
+  text-align: center;
+  }
+  table th {
+  background-color: #e03997 !important;
+  color: white !important;
+}
+.ui.sortable.table thead th{
+  border: 0 !important
+}

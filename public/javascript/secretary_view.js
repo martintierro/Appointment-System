@@ -1514,7 +1514,7 @@ function initializeShortcutsMain() {
                 $('#today').trigger('click')
                 break;
             case ENTER:
-                if (!$("#confirm-admin-modal")[0].className.includes("active")) {
+                if (!$("#confirm-admin-modal")[0].className.includes("active") && !$("#filter-dropdown")[0].className.includes("visible")) {
                     $("#add-button").trigger('click');
                 }
                 break;

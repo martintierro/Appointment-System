@@ -59,12 +59,25 @@ node server.js
 ```
 
 Step 5:
--
+- 
+- Run the React application in another command prompt. The website will automatically open in your browser.
+```bash
+npm start
+```
+
+Unit Tests:
+- 
 - To run the unit test scripts enter this command in the command prompt
 ```bash
 npm test
 ```
 
+Automated Tests:
+- 
+- To run all the automated test cases enter this command in the command prompt
+```bash
+robot .
+```
 
 
 Thank you for reading :)

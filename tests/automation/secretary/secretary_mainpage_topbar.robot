@@ -42,6 +42,13 @@ Week Table View
 	Click Element	secretary-dropdown-view
 	Element Should Contain	table-header-title	Weekly Appointments
 	
+<<<<<<< HEAD
+=======
+#Logout Secretary Account
+#	Click Element	secretary-logout-container
+#	Element Should Be Visible 
+	
+>>>>>>> 2cbc9c14c6721fc82d51296a6d6da403f2885129
 *** Keywords ***
 Input Text Date
 	[Arguments]	${date}
